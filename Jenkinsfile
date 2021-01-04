@@ -4,6 +4,8 @@ pipeline {
         stage('Verify Branch') {
             steps {
                 echo "$GIT_BRANCH"
+                sh(script: 'whoami')
+                sh(script: 'id')
             }
         }
         stage('Docker Build') {
