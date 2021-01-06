@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo "$GIT_BRANCH"
                 sh(script: 'whoami')
-                sh(script: 'id')
+                sh(script: 'id  ')
             }
         }
         stage('Docker Build') {
@@ -19,6 +19,33 @@ pipeline {
                     cd ..
                 """)
             }
+        }
+        stage('start test app')
+        steps{
+            sh(script: """
+            docker compose up
+            """)
+        }
+        post {
+            success {
+                echo "App started successfully"
+            }
+            failure {
+                echo "App start failed"
+            }
+        }
+        stage('Run Tests'){
+            steps{
+                sh(script:"""
+                    pytest ./tests/test_sample.py
+                """)
+            }
+        }
+        stage('stop test app') {
+            sh(script: """
+            docker compose down
+            """)
+        }
         }
     }
 }
